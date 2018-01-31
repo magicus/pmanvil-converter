@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="pmanvil-converter" default="all">
+
+    <!-- Compiler options -->
+
+    <property name="compiler.debug" value="on"/>
+    <property name="compiler.generate.no.warnings" value="off"/>
+    <property name="compiler.args" value=""/>
+    <property name="compiler.max.memory" value="700m"/>
+    <patternset id="ignored.files">
+        <exclude name="**/*.hprof/**"/>
+        <exclude name="**/*~/**"/>
+        <exclude name="**/.DS_Store/**"/>
+        <exclude name="**/.git/**"/>
+        <exclude name="**/.hg/**"/>
+        <exclude name="**/.svn/**"/>
+        <exclude name="**/CVS/**"/>
+        <exclude name="**/_svn/**"/>
+        <exclude name="**/vssver.scc/**"/>
+        <exclude name="**/vssver2.scc/**"/>
+    </patternset>
+    <patternset id="library.patterns">
+        <include name="*.war"/>
+        <include name="*.swc"/>
+        <include name="*.zip"/>
+        <include name="*.egg"/>
+        <include name="*.ane"/>
+        <include name="*.jar"/>
+        <include name="*.ear"/>
+    </patternset>
+    <patternset id="compiler.resources">
+        <exclude name="**/?*.java"/>
+        <exclude name="**/?*.form"/>
+        <exclude name="**/?*.class"/>
+        <exclude name="**/?*.groovy"/>
+        <exclude name="**/?*.scala"/>
+        <exclude name="**/?*.flex"/>
+        <exclude name="**/?*.kt"/>
+        <exclude name="**/?*.clj"/>
+        <exclude name="**/?*.aj"/>
+    </patternset>
+
+    <!-- Modules -->
+
+    <!-- Module pmanvil-converter -->
+
+    <dirname property="module.pmanvil-converter.basedir" file="${ant.file}"/>
+
+    <property name="compiler.args.pmanvil-converter" value="-encoding UTF-8 -source 1.8 -target 1.8 ${compiler.args}"/>
+
+    <property name="pmanvil-converter.output.dir" value="${module.pmanvil-converter.basedir}/build/classes"/>
+    <property name="pmanvil-converter.jar.dir" value="${module.pmanvil-converter.basedir}/build"/>
+    <property name="pmanvil-converter.jar.filename" value="pmanvil-converter.jar"/>
+    <property name="pmanvil-converter.jar.mainclass" value="se.icus.mag.pmanvil.PMAnvilConverter"/>
+
+    <path id="pmanvil-converter.module.production.classpath"/>
+
+    <path id="pmanvil-converter.runtime.production.module.classpath">
+        <pathelement location="${pmanvil-converter.output.dir}"/>
+    </path>
+
+    <path id="pmanvil-converter.module.classpath">
+        <pathelement location="${pmanvil-converter.output.dir}"/>
+    </path>
+
+    <path id="pmanvil-converter.runtime.module.classpath">
+        <pathelement location="${pmanvil-converter.output.dir}"/>
+    </path>
+
+
+    <patternset id="excluded.from.module.pmanvil-converter">
+        <patternset refid="ignored.files"/>
+    </patternset>
+
+    <patternset id="excluded.from.compilation.pmanvil-converter">
+        <patternset refid="excluded.from.module.pmanvil-converter"/>
+    </patternset>
+
+    <path id="pmanvil-converter.module.sourcepath">
+        <dirset dir="${module.pmanvil-converter.basedir}">
+            <include name="src"/>
+        </dirset>
+    </path>
+
+
+    <target name="compile.module.pmanvil-converter" depends="compile.module.pmanvil-converter.production"
+            description="Compile module pmanvil-converter"/>
+
+    <target name="compile.module.pmanvil-converter.production"
+            description="Compile module pmanvil-converter; production classes">
+        <mkdir dir="${pmanvil-converter.output.dir}"/>
+        <javac destdir="${pmanvil-converter.output.dir}" debug="${compiler.debug}"
+               nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true"
+               includeantruntime="false">
+            <compilerarg line="${compiler.args.pmanvil-converter}"/>
+            <classpath refid="pmanvil-converter.module.production.classpath"/>
+            <src refid="pmanvil-converter.module.sourcepath"/>
+            <patternset refid="excluded.from.compilation.pmanvil-converter"/>
+        </javac>
+
+        <copy todir="${pmanvil-converter.output.dir}">
+            <fileset dir="${module.pmanvil-converter.basedir}/src">
+                <patternset refid="compiler.resources"/>
+                <type type="file"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="jar" depends="compile.module.pmanvil-converter.production" description="Build jar file">
+        <mkdir dir="${pmanvil-converter.jar.dir}"/>
+        <jar destfile="${pmanvil-converter.jar.dir}/${pmanvil-converter.jar.filename}"
+             basedir="${pmanvil-converter.output.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="${pmanvil-converter.jar.mainclass}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="clean.module.pmanvil-converter" description="cleanup module">
+        <delete dir="${pmanvil-converter.output.dir}"/>
+    </target>
+
+    <target name="init" description="Build initialization">
+        <!-- Perform any build initialization in this target -->
+    </target>
+
+    <target name="clean" depends="clean.module.pmanvil-converter" description="cleanup all"/>
+
+    <target name="build.modules" depends="init, clean, compile.module.pmanvil-converter"
+            description="build all modules"/>
+
+    <target name="all" depends="build.modules,jar" description="build all"/>
+</project>
