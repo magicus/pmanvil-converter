@@ -18,7 +18,7 @@ This program works like the Mojang [McRegion to Anvil conversion tool](https://w
 
 ```java -jar pmanvil-converter.jar /path/to/worlds/basedir world```
 
-where `world` is the name of the world you want to convert.
+where `world` is the name of the world you want to convert. According to a user report, this does not work if the path has spaces in it (common on Windows platform). If this is the case, rename the directory or make a copy to a directory without spaces.
 
 After conversion, the old mcapm files are left in place, and can be removed.
 
